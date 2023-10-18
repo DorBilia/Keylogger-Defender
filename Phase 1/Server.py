@@ -14,7 +14,7 @@ class Server:
         server.bind(ADDRESS)
         server.listen()
         self.conn, addr = server.accept()
-        self.db = Database.Database("Keyloggs")
+        self.db = Database.Database()
 
     def save_text(self, text):  # save the chosen data from DB in text file
         name = askstring('File Name', 'Enter the file name or write to an existing file')
@@ -59,17 +59,18 @@ class Server:
         y = 80
         st = {}
         d = {}
+        print(times)
         for t in times:
-            time = (Label(app, text=t[0], font="Ariel 10"))
+            time = (Label(app, text=t, font="Ariel 10"))
             time.place(x=20, y=y)
-            b = Button(app, text="get save in text file", command=lambda t0=t[0]: self.save_text(self.db.ShowData(t0)))
+            b = Button(app, text="get save in text file", command=lambda t0=t: self.save_text(self.db.ShowData(t0)))
             b.place(x=200, y=y, height=20, width=150)
-            st[b] = t[0]
-            b1 = Button(app, text="delete save", command=lambda t0=t[0]: self.db.Delete(t0))
+            st[b] = t
+            b1 = Button(app, text="delete save", command=lambda t0=t: self.db.Delete(t0))
             b1.place(x=355, y=y, height=20, width=100)
-            d[b1] = t[0]
+            d[b1] = t
             y += 20
-            app.mainloop()
+        app.mainloop()
 
     def start(self):  # start th GUI
         self.window = Tk()
@@ -88,7 +89,7 @@ class Server:
         v.config(command=self.text.yview)
         save = Button(self.window, text="save data",
                       command=lambda: self.db.Add(codecs.encode(self.text.get(1.0, END), 'rot_13'),
-                                                  datetime.datetime.now()))
+                                                  str(datetime.datetime.now())))
         save.place(x=340, y=420, height=50, width=100)
         data = Button(self.window, text="manage saves", command=self.get_saves)
         data.place(x=200, y=420, height=50, width=100)
